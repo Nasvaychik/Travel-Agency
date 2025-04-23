@@ -1,0 +1,132 @@
+[
+  {
+    "title": "Вестминстерский мост",
+    "city": "Лондон",
+    "address": "Где-то в Лондоне",
+    "distance": 300,
+    "price": 99,
+    "maxGroupSize": 10,
+    "desc": "это и есть описание",
+    "reviews": [],
+
+    "photo": "/tour-images/tour-img01.jpg",
+    "featured": true
+  },
+  {
+    "title": "Бали, Индонезия",
+    "city": "Бали",
+    "address": "Где-то в Индонезии",
+    "distance": 400,
+    "price": 99,
+    "maxGroupSize": 8,
+    "desc": "это и есть описание",
+    "reviews": [],
+
+    "photo": "/tour-images/tour-img02.jpg",
+    "featured": true
+  },
+  {
+    "title": "Заснеженные горы, Таиланд",
+    "city": "Бангкок",
+    "address": "Где-нибудь в Таиланде",
+    "distance": 500,
+    "price": 99,
+    "maxGroupSize": 8,
+    "desc": "это и есть описание",
+    "reviews": [],
+
+    "photo": "/tour-images/tour-img03.jpg",
+    "featured": true
+  },
+  {
+    "title": "Прекрасный восход солнца, Таиланд",
+    "city": "Пхукет",
+    "address": "Где-нибудь в Таиланде",
+    "distance": 500,
+    "price": 99,
+    "maxGroupSize": 8,
+    "desc": "это и есть описание",
+    "reviews": [],
+
+    "photo": "/tour-images/tour-img04.jpg",
+    "featured": true
+  },
+  {
+    "title": "Нуса-Пендия, Бали, Индонезия",
+    "city": "Бали",
+    "address": "Где-то в Индонезии",
+    "distance": 500,
+    "price": 99,
+    "maxGroupSize": 8,
+    "desc": "это и есть описание",
+    "reviews": [],
+
+    "photo": "/tour-images/tour-img05.jpg",
+    "featured": true
+  },
+  {
+    "title": "Вишня цветет весной",
+    "city": "Токио",
+    "address": "Где-то в Японии",
+    "distance": 500,
+    "price": 99,
+    "maxGroupSize": 8,
+    "desc": "это и есть описание",
+    "reviews": [],
+
+    "photo": "/tour-images/tour-img06.jpg",
+    "featured": true
+  },
+  {
+    "title": "Холмен-Лофотенские острова, Франция",
+    "city": "Париж",
+    "address": "Где-то во Франции",
+    "distance": 500,
+    "price": 99,
+    "maxGroupSize": 8,
+    "desc": "это и есть описание",
+    "reviews": [],
+
+    "photo": "/tour-images/tour-img07.jpg",
+    "featured": true
+  },
+  {
+    "title": "Заснеженные горы, Таиланд",
+    "city": "Бангкок",
+    "address": "Где-нибудь в Таиланде",
+    "distance": 500,
+    "price": 99,
+    "maxGroupSize": 8,
+    "desc": "это и есть описание",
+    "reviews": [],
+
+    "photo": "/tour-images/tour-img03.jpg",
+    "featured": true
+  },
+  {
+    "title": "Джафлонг, Силхет",
+    "city": "Силхет",
+    "address": "Где-то в Силхете",
+    "distance": 100,
+    "price": 99,
+    "maxGroupSize": 5,
+    "desc": "это и есть описание",
+    "reviews": [],
+
+    "photo": "/tour-images/tour-img08.jpg",
+    "featured": false
+  },
+  {
+    "title": "Морской пляж Кокс-Базар",
+    "city": "Читтагонг",
+    "address": "Где-то в Читтагонге",
+    "distance": 500,
+    "price": 99,
+    "maxGroupSize": 8,
+    "desc": "this is the description",
+    "reviews": [],
+
+    "photo": "/tour-images/tour-img09.jpg",
+    "featured": false
+  }
+]
