@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { AppContext } from "../context/AppContext";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom"; // Импортировать usenavigate
 
 const LoginPage = () => {
   const { backendUrl, setToken, setUser } = useContext(AppContext);
@@ -11,7 +11,7 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
 
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate(); // Инициализация навигации
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -25,9 +25,8 @@ const LoginPage = () => {
       let response;
       const [last_name, first_name, surname] = name.split(" ").slice(0, 3);
 
-      // Determine whether it's login or register
+      // Определите, нужно ли вам войти в систему или зарегистрироваться
       if (isLogin) {
-        // Update login route to match backend API
         response = await axios.post(`${backendUrl}/users/token`, {
           email,
           password,
@@ -42,7 +41,7 @@ const LoginPage = () => {
         });
       }
 
-      // Check if response is successful
+      // Проверка, получен ли ответ успешно
       if (response.data.success) {
         const { token, user } = response.data;
         setToken(token);
@@ -51,18 +50,18 @@ const LoginPage = () => {
         localStorage.setItem("token", token);
         localStorage.setItem("user", JSON.stringify(user));
 
-        // Show success toast message
+        // Показывать всплывающее сообщение об успехе
         toast.success(
           isLogin ? "Успешно вошел в систему!" : "Зарегистрировался успешно!"
         );
 
-        // Redirect to home page after successful login or registration
-        navigate("/"); // Assuming /home is your home page route
+        // Перенаправление на домашнюю страницу после успешного входа в систему или регистрации
+        navigate("/"); 
       } else {
         toast.error(response.data.message || "Что-то пошло не так!");
       }
     } catch (error) {
-      console.error(error); // Log error to the console
+      console.error(error); // Запись ошибки в журнал на консоль
       toast.error(error.response?.data?.message || error.message);
     }
   };

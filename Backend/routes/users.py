@@ -4,7 +4,6 @@ import exceptions
 import models
 import serializers
 import auth
-from fastapi.security import OAuth2PasswordRequestForm
 
 import settings
 
@@ -77,25 +76,6 @@ async def validate_registration_email_endpoint(email: str):
         return {'detail': False}
 
     return {'detail': True}
-
-
-@router.post('/set_avatar', name='Загрузка аватара пользователя')
-async def set_user_avatar( user: auth.UserType, file: fastapi.UploadFile = None):
-    if not file:
-        file_rel_path = models.get_default_avatar()
-
-    else:
-        file_path = settings.get_media_file_path('avatar', f'{user.id}')
-
-        with open(file_path, 'wb') as file_opened:
-            file_opened.write(file.file.read())
-
-        file_rel_path = settings.get_relpath(file_path)
-
-    user.photo = file_rel_path
-    await user.update()
-
-    return user
 
 
 @router.post('/change-password/', name='Изменить пароль для авторизованного пользователя')

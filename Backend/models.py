@@ -1,14 +1,13 @@
-import enum
-from typing import Type, Union, Set, Optional, Dict
+import databases
 import ormar
-import random
+from datetime import datetime, date
+from typing import Optional, Union, Dict, Set, Type
+from enum import Enum
+
 import pydantic
 import sqlalchemy
-import databases
+from sqlalchemy_utils import database_exists, create_database, drop_database
 import settings
-import urllib.request
-from datetime import datetime, timedelta, date
-from sqlalchemy_utils import drop_database, create_database, database_exists
 
 metadata = sqlalchemy.MetaData()
 database = databases.Database(settings.DATABASE_URL)
@@ -26,29 +25,13 @@ base_ormar_config = ormar.OrmarConfig(
 )
 
 
-def get_med_card_expire_date():
-    return datetime.now() + timedelta(days=10 * 365)
-
-
-def get_default_avatar():
-    random_seed = random.randint(100, 99999999)
-    url = f'https://api.dicebear.com/7.x/miniavs/svg?seed={random_seed}'
-
-    image_save_path, rel_path = settings.get_avatar_save_path(f'{random_seed}.svg')
-
-    urllib.request.urlretrieve(
-        url=url,
-        filename=image_save_path,
-    )
-
-    return rel_path
-
-class GenderChoices(str, enum.Enum):
+class GenderChoices(str, Enum):
     MALE = "male"
     FEMALE = "female"
     OTHER = "other"
 
-class BookingStatuses(str, enum.Enum):
+
+class BookingStatuses(str, Enum):
     PENDING = "pending"
     CONFIRMED = "confirmed"
     CANCELLED = "cancelled"
@@ -85,27 +68,52 @@ class Destination(PartialMixin, ormar.Model):
     id: int = ormar.BigInteger(primary_key=True, autoincrement=True)
     name: str = ormar.String(max_length=150, nullable=False)
     description: str = ormar.Text(nullable=True)
+    climate: str = ormar.String(max_length=100, nullable=True)
+    visa_requirements: bool = ormar.Boolean(default=False)
     is_active: bool = ormar.Boolean(default=True)
-
 
 class Tour(PartialMixin, ormar.Model):
     ormar_config = base_ormar_config.copy(tablename='tours')
 
     id: int = ormar.BigInteger(primary_key=True, autoincrement=True)
-    featured: bool = ormar.Boolean(default=True)
-    city: str = ormar.String(max_length=200, nullable=False)
-    avgRating: float = ormar.Decimal(max_digits=3, decimal_places=2)
-    desc: str = ormar.Text(nullable=True)
-    date_created: date = ormar.Date(nullable=False)
-    date_expires: date = ormar.Date(nullable=False)
+    date_created: datetime = ormar.DateTime(nullable=False, default=datetime.now)
+    date_expires: datetime = ormar.DateTime(nullable=False)
     name: str = ormar.String(max_length=200, nullable=False)
     base_price: float = ormar.Decimal(max_digits=12, decimal_places=2, nullable=False)
-    cover_image: str = ormar.String(
-        max_length=500,
-        nullable=True,
-        default="https://i.pinimg.com/736x/2d/a7/00/2da700815853f66a793a749d2ed1cd4c.jpg",
-        regex=r"^(https?://|/).+\.(jpg|jpeg|png|webp)$"
-    )
+    desc: str = ormar.Text(nullable=False)
+    featured: bool = ormar.Boolean(default=True, nullable=False)
+    cover_image: str = ormar.Text(nullable=False, default="")
+    city: str = ormar.String(nullable=False, max_length=100)
+    avg_rating: float = ormar.Decimal(decimal_places=2, max_digits=3, nullable=False, default=0.0)
+
+
+class RoomType(PartialMixin, ormar.Model):
+    ormar_config = base_ormar_config.copy(tablename='room_types')
+
+    id: int = ormar.BigInteger(primary_key=True, autoincrement=True)
+    name: str = ormar.String(max_length=128, nullable=False)
+    description: Optional[str] = ormar.Text(nullable=True)
+    capacity: int = ormar.Integer(nullable=False)
+
+
+class Hotel(PartialMixin, ormar.Model):
+    ormar_config = base_ormar_config.copy(tablename='hotels')
+
+    id: int = ormar.BigInteger(primary_key=True, autoincrement=True)
+    name: str = ormar.String(max_length=200, nullable=False)
+    stars: Optional[int] = ormar.Integer(minimum=1, maximum=5, nullable=True)
+    address: str = ormar.Text(nullable=False)
+    destination: Destination = ormar.ForeignKey(Destination, nullable=False)
+
+
+class HotelRoom(PartialMixin, ormar.Model):
+    ormar_config = base_ormar_config.copy(tablename='hotel_rooms')
+
+    id: int = ormar.BigInteger(primary_key=True, autoincrement=True)
+    hotel: Hotel = ormar.ForeignKey(Hotel, nullable=False)
+    room_type: RoomType = ormar.ForeignKey(RoomType, nullable=False)
+    room_number: str = ormar.String(max_length=20, nullable=False)
+    price_per_night: float = ormar.Decimal(max_digits=10, decimal_places=2, nullable=False)
 
 
 class User(PartialMixin, ormar.Model):
@@ -115,8 +123,8 @@ class User(PartialMixin, ormar.Model):
     first_name: str = ormar.String(max_length=50, nullable=False)
     last_name: str = ormar.String(max_length=50, nullable=False)
     surname: Optional[str] = ormar.String(max_length=50, nullable=True)
-    password = ormar.Text(nullable=False)
     email: str = ormar.String(max_length=250, regex=r"^\S+@\S+\.\S+$", nullable=False)
+    password: str = ormar.Text(nullable=False)
 
 
 class Booking(PartialMixin, ormar.Model):
@@ -124,10 +132,11 @@ class Booking(PartialMixin, ormar.Model):
 
     id: int = ormar.BigInteger(primary_key=True, autoincrement=True)
     date_created: datetime = ormar.DateTime(default=datetime.now, nullable=False)
-    check_in_date: date = ormar.Date(nullable=False)
-    check_out_date: date = ormar.Date(nullable=False)
-    user: User = ormar.ForeignKey(User, nullable=False)
+    check_in_date: datetime = ormar.DateTime(nullable=False)
+    check_out_date: datetime = ormar.DateTime(nullable=False)
+    client: User = ormar.ForeignKey(User, nullable=False)
     tour: Optional[Tour] = ormar.ForeignKey(Tour, nullable=True)
+    room: Optional[HotelRoom] = ormar.ForeignKey(HotelRoom, nullable=True)
     total_price: float = ormar.Decimal(max_digits=12, decimal_places=2, nullable=False)
     status: BookingStatuses = ormar.String(
         max_length=20,
@@ -136,6 +145,4 @@ class Booking(PartialMixin, ormar.Model):
         nullable=False
     )
 
-
-# metadata.drop_all(bind=engine)
 metadata.create_all(bind=engine)

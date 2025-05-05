@@ -22,7 +22,7 @@ const Navbar = () => {
         />
       </Link>
 
-      {/* Flex container for small screens */}
+      {/* Гибкий контейнер для небольших экранов */}
       <div className="flex items-center gap-4 sm:hidden">
         {user && (
           <div className="relative group">
@@ -31,14 +31,14 @@ const Navbar = () => {
               alt="profileimg"
               className="w-10 drop-shadow"
             />
-            {/* Tooltip with the user's name on hover */}
+            {/* Всплывающая подсказка с именем пользователя при наведении курсора мыши */}
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 p-2 bg-black text-white rounded opacity-0 group-hover:opacity-100 transition-opacity">
               Привет,{user.name}
             </div>
           </div>
         )}
 
-        {/* Hamburger icon for mobile */}
+        {/* Значок гамбургера для мобильных устройств */}
         <button onClick={toggleMenu} className="text-2xl">
           {menuOpen ? (
             <X className="text-black" />
@@ -48,7 +48,7 @@ const Navbar = () => {
         </button>
       </div>
 
-      {/* Menu for desktop */}
+      {/*Меню для десктопа */}
       <div className="hidden sm:flex items-center gap-6">
         <ul className="flex gap-6">
           <li>
@@ -86,7 +86,7 @@ const Navbar = () => {
           <div className="flex items-center gap-4">
             <div className="relative group">
               <img src={assets.user} alt="profile" width={40} />
-              {/* Tooltip for user name */}
+              {/* Всплывающая подсказка по имени пользователя */}
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 p-2 bg-black text-white rounded opacity-0 group-hover:opacity-100 transition-opacity">
                 Привет,{user.name}
               </div>
@@ -107,7 +107,7 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Mobile Menu */}
+      {/* Мобильное меню */}
       {menuOpen && (
         <div className="sm:hidden absolute top-16 left-0 w-full bg-sky-100/90 p-4">
           <ul className="flex flex-col items-center gap-4">
