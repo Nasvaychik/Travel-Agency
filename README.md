@@ -14,3 +14,9 @@
     ```bash
      npm run dev
      ```
+## Запуск Бекенда
+
+1.  **Запуск бекенда**:
+     ```bash
+     python -m venv venv ./venv/Scripts/activate.bat pip install -r requirements.txt python main.py
+     ```
