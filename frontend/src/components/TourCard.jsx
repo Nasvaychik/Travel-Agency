@@ -14,7 +14,7 @@ const fadeIn = {
 };
 
 const TourCard = ({ tour }) => {
-  const { id, title, photo, desc, price, featured, city, avgRating } = tour;
+  const { id, name, cover_image, desc, base_price, featured, city, avgRating } = tour;
 
   return (
     <motion.div
@@ -25,7 +25,7 @@ const TourCard = ({ tour }) => {
       variants={fadeIn}
     >
       <div className="relative">
-        <img src={photo} alt="tourimg" className="w-full h-64 object-cover" />
+        <img src={cover_image} alt="tourimg" className="w-full h-64 object-cover" />
         {featured && (
           <span className="absolute top-4 left-4 bg-blue-500 text-white py-1 px-3 rounded-md text-sm font-semibold">
             Рекомендуемые
@@ -49,13 +49,13 @@ const TourCard = ({ tour }) => {
             onClick={() => scrollTo(0, 0)}
             className="text-blue-600 hover:underline"
           >
-            {title}
+            {name}
           </Link>
         </h3>
 
         <div className="flex justify-between items-center">
           <h5 className="text-xl font-semibold text-gray-800">
-            ₽{price} <span className="text-sm text-gray-500">/цена</span>
+            ₽{base_price} <span className="text-sm text-gray-500">/цена</span>
           </h5>
           <motion.button
             className="bg-gradient-to-b from-sky-500 to-blue-500 text-white hover:from-sky-800 hover:to-blue-700 py-2 px-4 rounded-md transition-colors"

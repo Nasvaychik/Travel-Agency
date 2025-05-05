@@ -23,17 +23,20 @@ const LoginPage = () => {
       }
 
       let response;
+      const [last_name, first_name, surname] = name.split(" ").slice(0, 3);
 
       // Determine whether it's login or register
       if (isLogin) {
         // Update login route to match backend API
-        response = await axios.post(`${backendUrl}/api/user/login`, {
+        response = await axios.post(`${backendUrl}/users/token`, {
           email,
           password,
         });
       } else {
-        response = await axios.post(`${backendUrl}/api/user/register`, {
-          name,
+        response = await axios.post(`${backendUrl}/users/register`, {
+          last_name,
+          first_name,
+          surname,
           email,
           password,
         });

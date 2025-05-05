@@ -1,31 +1,52 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react"; // Добавлен useEffect
 import { useNavigate, useParams } from "react-router-dom";
 import { Calendar, DollarSign, MapPin, Users, Star } from "lucide-react";
 import tourData from "../assets/data/tour.js";
 import { AppContext } from "../context/AppContext";
+import axios from "axios"; // Добавлен импорт axios
 
 const TourDetails = () => {
   const { user } = useContext(AppContext);
   const navigate = useNavigate();
   const { id } = useParams();
-  const tour = tourData.find((tour) => tour.id === id);
+  const [tour, setTour] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(tour?.availableDates?.[0] || "");
 
+  useEffect(() => {
+    const fetchTour = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/tour/${id}/`);
+        setTour(response.data);
+        setSelectedDate(response.data.availableDates?.[0] || "");
+      } catch (err) {
+        setError(err.response?.data?.detail || 'Ошибка загрузки тура');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTour();
+  }, [id]);
+
+  if (loading) return <div>Загрузка...</div>;
+  if (error) return <div>Ошибка: {error}</div>;
   if (!tour) return <div>Тур не найден</div>;
 
   const {
-    photo,
-    title,
+    name: title,
+    cover_image: photo,
     desc,
-    price,
-    reviews,
+    base_price: price,
+    featured,
     city,
-    distance,
-    maxGroupSize,
-    availableDates,
     avgRating,
+    distance = 0,
+    maxGroupSize = 10,
+    availableDates = [],
+    reviews = []
   } = tour;
-
-  const [selectedDate, setSelectedDate] = useState(availableDates[0]);
 
   const handleDateChange = (event) => {
     setSelectedDate(event.target.value);
@@ -46,6 +67,7 @@ const TourDetails = () => {
     }
     return stars;
   };
+
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-sky-50 via-blue-50 to-violet-50 py-8">

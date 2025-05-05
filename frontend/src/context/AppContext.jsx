@@ -5,7 +5,7 @@ export const AppContext = createContext();
 
 const AppContextProvider = (props) => {
   const navigate = useNavigate();
-  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+  const backendUrl = 'http://localhost:8080';
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token"));
 
@@ -38,6 +38,22 @@ const AppContextProvider = (props) => {
 
   return (
     <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
+  );
+};
+
+const AppProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+    // Дополнительная логика очистки, если нужно
+  };
+
+  return (
+    <AppContext.Provider value={{ user, setUser, logout }}>
+      {children}
+    </AppContext.Provider>
   );
 };
 
