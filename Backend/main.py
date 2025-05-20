@@ -3,7 +3,8 @@ import fastapi
 import uvicorn
 import exceptions
 import settings
-from routes import users, tours
+from routes import users, tours, bookings
+import auth
 from models import database
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -22,6 +23,8 @@ app.add_middleware(
 
 app.include_router(users.router)
 app.include_router(tours.router)
+app.include_router(auth.router)
+app.include_router(bookings.router)
 
 
 @app.on_event('startup')

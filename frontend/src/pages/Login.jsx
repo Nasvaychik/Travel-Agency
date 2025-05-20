@@ -42,12 +42,12 @@ const LoginPage = () => {
       }
 
       // Проверка, получен ли ответ успешно
-      if (response.data.success) {
-        const { token, user } = response.data;
-        setToken(token);
+      if (response.status === 200) {
+        const { access_token, user } = response.data;
+        setToken(access_token);
         setUser(user);
 
-        localStorage.setItem("token", token);
+        localStorage.setItem("token", access_token);
         localStorage.setItem("user", JSON.stringify(user));
 
         // Показывать всплывающее сообщение об успехе

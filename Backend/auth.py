@@ -1,5 +1,5 @@
 from typing import Annotated
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from datetime import timedelta, timezone, datetime
 import models
@@ -14,6 +14,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/users/token")
 
+router = APIRouter()
 
 async def get_user(email: str):
     return await models.User.objects.get_or_none(email=email)

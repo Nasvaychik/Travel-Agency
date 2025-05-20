@@ -63,3 +63,35 @@ UserUpdateSerializer = models.User.get_pydantic_partial(
 class UserPasswordChangeSerializer(Model):
     old_password: str = pydantic.Field(title="Старый пароль")
     new_password: str = pydantic.Field(title="Новый пароль")
+
+class TourResponse(pydantic.BaseModel):
+    id: int
+    name: str
+    base_price: float
+    desc: str
+    featured: bool
+    cover_image: str
+    city: str
+    avg_rating: float
+    date_created: datetime
+    date_expires: datetime
+
+    class Config:
+        orm_mode = True
+
+class BookingCreate(pydantic.BaseModel):
+    tour_id: int
+    check_in_date: datetime
+    check_out_date: datetime
+
+class BookingResponse(pydantic.BaseModel):
+    id: int
+    date_created: datetime
+    check_in_date: datetime
+    check_out_date: datetime
+    total_price: float
+    status: str
+    tour: TourResponse
+
+    class Config:
+        orm_mode = True

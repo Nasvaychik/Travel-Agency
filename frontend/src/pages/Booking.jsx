@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AppContext } from "../context/AppContext";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 const Booking = () => {
   const { user } = useContext(AppContext);
@@ -42,32 +43,29 @@ const Booking = () => {
     }
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/bookings`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...formData,
-            tourId: tour.id,
-            tourTitle: tour.title,
-            totalPrice,
-          }),
-        }
-      );
+  const response = await axios.post(
+    `http://localhost:8080/bookings`,
+    {
+      ...formData,
+      tourId: tour.id,
+      tourTitle: tour.title,
+      totalPrice,
+    }, {
+  headers: {
+    Authorization: 'Bearer ' + localStorage.getItem('token')
+  } 
+    });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to create booking");
-      }
+  if (response.status > 200) {
+    throw new Error(response.data.message || "Failed to create booking");
+  }
 
-      const data = await response.json();
+  const data = await response.data;
 
-      toast.success("Booking successful!");
-      navigate("/invoice", { state: { booking: data.booking } });
-    } catch (error) {
+  toast.success("Booking successful!");
+  navigate("/invoice", { state: { booking: data.booking } });
+}
+     catch (error) {
       console.error("Booking error:", error);
       toast.error("Error: " + error.message);
     }
