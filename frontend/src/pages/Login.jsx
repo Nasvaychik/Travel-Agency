@@ -1,11 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { AppContext } from "../context/AppContext";
-import { useNavigate } from "react-router-dom"; // Импортировать usenavigate
+import { Navigate, useNavigate } from "react-router-dom"; // Импортировать usenavigate
+import { app } from "../app";
 
 const LoginPage = () => {
-  const { backendUrl, setToken, setUser } = useContext(AppContext);
+  const token = localStorage.getItem('token');
+  const { setToken, setUser } = useContext(AppContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,12 +29,12 @@ const LoginPage = () => {
 
       // Определите, нужно ли вам войти в систему или зарегистрироваться
       if (isLogin) {
-        response = await axios.post(`${backendUrl}/users/token`, {
+        response = await app.post(`/users/token`, {
           email,
           password,
         });
       } else {
-        response = await axios.post(`${backendUrl}/users/register`, {
+        response = await app.post(`/users/register`, {
           last_name,
           first_name,
           surname,
@@ -64,6 +66,10 @@ const LoginPage = () => {
       console.error(error); // Запись ошибки в журнал на консоль
       toast.error(error.response?.data?.message || error.message);
     }
+  };
+
+  if (token) {
+    return <Navigate to="/" />
   };
 
   return (

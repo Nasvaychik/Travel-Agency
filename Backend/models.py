@@ -85,6 +85,12 @@ class Tour(PartialMixin, ormar.Model):
     cover_image: str = ormar.Text(nullable=False, default="")
     city: str = ormar.String(nullable=False, max_length=100)
     avg_rating: float = ormar.Decimal(decimal_places=2, max_digits=3, nullable=False, default=0.0)
+    destination: Destination = ormar.ForeignKey(
+        to=Destination,
+        nullable=False,
+        on_update=ormar.ReferentialAction.CASCADE,
+        on_delete=ormar.ReferentialAction.CASCADE
+    )
 
 
 class RoomType(PartialMixin, ormar.Model):

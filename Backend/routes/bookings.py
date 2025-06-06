@@ -29,7 +29,7 @@ async def create_booking(
             detail="Дата выезда должна быть позже даты заезда"
         )
     
-    if booking_data.check_in_date < datetime.now(tz=timezone(offset=timedelta(hours=3))):
+    if booking_data.check_in_date < datetime.now():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Дата заезда не может быть в прошлом"
@@ -41,8 +41,9 @@ async def create_booking(
         check_out_date=booking_data.check_out_date,
         client=current_user,
         tour=tour,
-        total_price=tour.base_price,
-        status=BookingStatuses.PENDING
+        total_price=tour.base_price * booking_data.travelers,
+        status=BookingStatuses.PENDING,
+        room=booking_data.room
     )
     
     return booking
@@ -52,12 +53,12 @@ async def get_my_bookings(current_user: User = Depends(auth.get_current_user)):
     bookings = await Booking.objects.filter(client=current_user).all()
     return bookings
 
-@router.get("/{booking_id}", response_model=BookingResponse)
+@router.get("/{booking_id}")
 async def get_booking(
     booking_id: int,
     current_user: User = Depends(auth.get_current_user)
 ):
-    booking = await Booking.objects.get_or_none(id=booking_id)
+    booking = await Booking.objects.select_related(['client', 'tour']).get_or_none(id=booking_id)
     if not booking:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

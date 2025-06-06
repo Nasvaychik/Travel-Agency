@@ -4,6 +4,7 @@ import { Calendar, DollarSign, MapPin, Users, Star } from "lucide-react";
 import tourData from "../assets/data/tour.js";
 import { AppContext } from "../context/AppContext";
 import axios from "axios"; // Добавлен импорт axios
+import { app } from "../app.js";
 
 const TourDetails = () => {
   const { user } = useContext(AppContext);
@@ -17,7 +18,7 @@ const TourDetails = () => {
   useEffect(() => {
     const fetchTour = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/tours/${id}/`);
+        const response = await app.get(`/tours/${id}/`);
         setTour(response.data);
         setSelectedDate(response.data.availableDates?.[0] || "");
       } catch (err) {
@@ -158,7 +159,7 @@ const TourDetails = () => {
                 navigate("/login");
               } else {
                 // Если пользователь вошел в систему, перейдите на страницу бронирования
-                navigate(`/booking`, { state: { tour } });
+                navigate(`/booking/${tour.id}`);
               }
             }}
             className="bg-gradient-to-b from-sky-500 to-blue-500 hover:from-sky-800 hover:to-blue-700 px-6 py-3 text-white text-lg font-semibold rounded-full transition duration-300"

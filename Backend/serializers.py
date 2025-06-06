@@ -83,6 +83,8 @@ class BookingCreate(pydantic.BaseModel):
     tour_id: int
     check_in_date: datetime
     check_out_date: datetime
+    room: int
+    travelers: int = pydantic.Field(default=1)
 
 class BookingResponse(pydantic.BaseModel):
     id: int
