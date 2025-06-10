@@ -1,9 +1,21 @@
 ## Запуск Бекенда
 
-1.  **Запуск бекенда**:
+1.  **Установка venv**:
      ```bash
-     python -m venv venv ./venv/Scripts/activate.bat pip install -r requirements.txt python main.py
+     python -m venv venv   python main.py
      ```
+2. **Активация venv**
+    ```bash
+     ./venv/Scripts/activate.bat
+    ```
+3. **Установка зависимостей**
+    ```bash
+     pip install -r requirements.txt
+    ```
+4. **Запуск бекенда**
+    ```bash
+      python main.py
+    ```
 
 ## Запуск фронтенда
 
