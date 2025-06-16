@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Booking from "./pages/Booking";
 import Invoice from "./pages/Invoice";
 import About from "./pages/About";
+import Profile from "./pages/Profile";
 
 const App = () => {
   return (
@@ -24,10 +25,9 @@ const App = () => {
           <Route path="/about" element={<About />} />
           <Route path="/tours/:id" element={<TourDetails />} />
           <Route path="/login" element={<Login />} />
-          
-
-          <Route path="/booking" element={<Booking />} />
-          <Route path="/invoice" element={<Invoice />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/booking/:tourId" element={<Booking />} />
+          <Route path="/invoice/:bookingId" element={<Invoice />} />
         </Routes>
       </main>
       <Footer />

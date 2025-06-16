@@ -1,5 +1,5 @@
-import React from "react";
-import { useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import {
   PDFDownloadLink,
   Document,
@@ -8,6 +8,7 @@ import {
   View,
   StyleSheet,
 } from "@react-pdf/renderer";
+import { app } from "../app";
 
 const styles = StyleSheet.create({
   page: { padding: 30 },
@@ -22,30 +23,45 @@ const InvoicePDF = ({ booking }) => (
       <Text style={styles.title}>Счет за бронирование</Text>
       <View style={styles.section}>
         <Text style={styles.label}>Информация о клиенте</Text>
-        <Text>Имя: {booking.name}</Text>
-        <Text>Email: {booking.email}</Text>
-        <Text>Телефон: {booking.phone}</Text>
+        <Text>Имя: {booking.client.first_name} {" "} {booking.client.last_name}</Text>
+        <Text>Email: {booking.client.email}</Text>
+        <Text>Телефон: - </Text>
       </View>
       <View style={styles.section}>
         <Text style={styles.label}>Детали тура</Text>
-        <Text>Туры: {booking.tourTitle}</Text>
-        <Text>Количество путешественников: {booking.travelers}</Text>
-        <Text>Общая стоимость: ₽{booking.totalPrice}</Text>
+        <Text>Туры: {booking.tour.name}</Text>
+        <Text>Количество путешественников: {Math.round(booking.total_price / booking.tour.base_price)} </Text>
+        <Text>Общая стоимость: ₽{booking.total_price}</Text>
       </View>
     </Page>
   </Document>
 );
 
 const Invoice = () => {
-  const location = useLocation();
-  const booking = location.state?.booking;
+  const { bookingId } = useParams();
+  const [booking, setBooking] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!booking) {
+  useEffect(() => {
+    app.get(`/bookings/${bookingId}/`).then(({ data }) => {
+      setBooking(data);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
+    return null;
+  }
+
+  if (!booking && !loading) {
     return (
       <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold mb-6">Ошибка: Нет данных о бронировании</h2>
+        <h2 className="text-3xl font-bold mb-6">
+          Ошибка: Нет данных о бронировании
+        </h2>
         <p>
-          Произошла ошибка при получении информации о вашем бронировании. Пожалуйста, повторите попытку или обратитесь в службу поддержки.
+          Произошла ошибка при получении информации о вашем бронировании.
+          Пожалуйста, повторите попытку или обратитесь в службу поддержки.
         </p>
       </div>
     );
@@ -59,26 +75,26 @@ const Invoice = () => {
       <div>
         <h3 className="text-2xl font-semibold mb-5">Информация о клиенте</h3>
         <p>
-          <strong>Имя:</strong> {booking.name}
+          <strong>Имя:</strong> {booking.client.first_name} {" "} {booking.client.last_name}
         </p>
         <p>
-          <strong>Email:</strong> {booking.email}
+          <strong>Email:</strong> {booking.client.email}
         </p>
         <p>
-          <strong>Телефон:</strong> {booking.phone}
+          <strong>Телефон:</strong> {" - "}
         </p>
       </div>
       <div className="mt-6">
         <h3 className="text-2xl font-semibold mb-5">Детали тура</h3>
         <p>
-          <strong>Тур:</strong> {booking.tourTitle}
+          <strong>Тур:</strong> {booking.tour.name}
         </p>
         <p>
           <strong>Количество путешественников: </strong>
-          {booking.travelers}
+          {Math.round(booking.total_price / booking.tour.base_price)} 
         </p>
         <p>
-          <strong>Итоговая цена:</strong> ₽{booking.totalPrice}
+          <strong>Итоговая цена:</strong> ₽{booking.total_price}
         </p>
       </div>
       <div className="mt-6">
@@ -100,7 +116,9 @@ const Invoice = () => {
             }
           </PDFDownloadLink>
         ) : (
-          <p>Не удается сгенерировать PDF-файл: отсутствуют данные о бронировании</p>
+          <p>
+            Не удается сгенерировать PDF-файл: отсутствуют данные о бронировании
+          </p>
         )}
       </div>
     </div>

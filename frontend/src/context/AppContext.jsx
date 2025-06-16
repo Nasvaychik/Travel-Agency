@@ -13,7 +13,8 @@ const AppContextProvider = (props) => {
     const token = localStorage.getItem("token");
     const user = localStorage.getItem("user");
 
-    if (token && user) {
+    if (!!token && !!user) {
+      console.log(token, user);
       setToken(token);
       setUser(JSON.parse(user));
     }

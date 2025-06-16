@@ -25,20 +25,18 @@ const Navbar = () => {
       {/* Гибкий контейнер для небольших экранов */}
       <div className="flex items-center gap-4 sm:hidden">
         {user && (
-          <div className="relative group">
+          <Link to="/profile" className="relative group">
             <img
               src={assets.user}
               alt="profileimg"
               className="w-10 drop-shadow"
             />
-            {/* Всплывающая подсказка с именем пользователя при наведении курсора мыши */}
             <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 p-2 bg-black text-white rounded opacity-0 group-hover:opacity-100 transition-opacity">
-              Привет,{user.name}
+              {user.first_name} {user.last_name}
             </div>
-          </div>
+          </Link>
         )}
 
-        {/* Значок гамбургера для мобильных устройств */}
         <button onClick={toggleMenu} className="text-2xl">
           {menuOpen ? (
             <X className="text-black" />
@@ -84,24 +82,23 @@ const Navbar = () => {
         </ul>
         {user ? (
           <div className="flex items-center gap-4">
-            <div className="relative group">
+            <Link to="/profile" className="relative group">
               <img src={assets.user} alt="profile" width={40} />
-              {/* Всплывающая подсказка по имени пользователя */}
               <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 p-2 bg-black text-white rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                Привет,{user.name}
+                {user.first_name} {user.last_name}
               </div>
-            </div>
+            </Link>
             <button
               onClick={logout}
-              className="px-4 py-2 bg-gradient-to-b from-sky-500 to-blue-500 text-white rounded hover:from-sky-800 hover:to-blue-700 "
+              className="px-4 py-2 bg-gradient-to-b from-sky-500 to-blue-500 text-white rounded hover:from-sky-800 hover:to-blue-700"
             >
-              Выход из системы
+              Выход
             </button>
           </div>
         ) : (
           <Link to="/login">
-            <button className="px-4 py-2 bg-gradient-to-b from-sky-500 to-blue-500 text-white rounded hover:from-sky-800 hover:to-blue-700 ">
-              Авторизоваться
+            <button className="px-4 py-2 bg-gradient-to-b from-sky-500 to-blue-500 text-white rounded hover:from-sky-800 hover:to-blue-700">
+              Войти
             </button>
           </Link>
         )}
@@ -126,9 +123,7 @@ const Navbar = () => {
               <Link
                 to="/about"
                 className={`hover:text-blue-500 ${
-                  location.pathname === "/about"
-                    ? "text-blue-500 font-bold"
-                    : ""
+                  location.pathname === "/about" ? "text-blue-500 font-bold" : ""
                 }`}
                 onClick={() => setMenuOpen(false)}
               >
@@ -139,18 +134,26 @@ const Navbar = () => {
               <Link
                 to="/tours"
                 className={`hover:text-blue-500 ${
-                  location.pathname === "/tours"
-                    ? "text-blue-500 font-bold"
-                    : ""
+                  location.pathname === "/tours" ? "text-blue-500 font-bold" : ""
                 }`}
-                onClick={() => scrollTo(0, 0) && setMenuOpen(false)}
+                onClick={() => setMenuOpen(false)}
               >
                 Туры
               </Link>
             </li>
-
-            {user ? (
+            {user && (
               <>
+                <li>
+                  <Link
+                    to="/profile"
+                    className={`hover:text-blue-500 ${
+                      location.pathname === "/profile" ? "text-blue-500 font-bold" : ""
+                    }`}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Профиль
+                  </Link>
+                </li>
                 <li>
                   <button
                     onClick={() => {
@@ -159,21 +162,10 @@ const Navbar = () => {
                     }}
                     className="px-4 py-2 bg-gradient-to-b from-sky-500 to-blue-500 text-white rounded hover:from-sky-800 hover:to-blue-700"
                   >
-                    Выход из системы
+                    Выход
                   </button>
                 </li>
               </>
-            ) : (
-              <li>
-                <Link to="/login">
-                  <button
-                    onClick={() => setMenuOpen(false)}
-                    className="px-4 py-2 bg-gradient-to-b from-sky-500 to-blue-500 text-white rounded hover:from-sky-800 hover:to-blue-700"
-                  >
-                    Авторизоваться
-                  </button>
-                </Link>
-              </li>
             )}
           </ul>
         </div>
