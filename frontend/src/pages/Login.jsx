@@ -1,50 +1,58 @@
-import React, { useState, useContext, useEffect } from "react";
+import { useState, useContext, useMemo } from "react";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { AppContext } from "../context/AppContext";
-import { Navigate, useNavigate } from "react-router-dom"; // Импортировать usenavigate
+import { Navigate, useSearchParams } from "react-router-dom"; // Импортировать usenavigate
 import { app } from "../app";
 
 const LoginPage = () => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
+  const [params] = useSearchParams();
   const { setToken, setUser } = useContext(AppContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
 
-  const navigate = useNavigate(); // Инициализация навигации
+  const fallbackUrl = useMemo(() => {
+    return params.get("next");
+  }, [params]);
 
-  const onSubmitHandler = async (e) => {
+  const handleSubmitRegistrion = (e) => {
     e.preventDefault();
-    try {
-      // Validation
-      if (!email || !password || (isLogin ? false : !name)) {
-        toast.error("Все поля обязательны для заполнения!");
-        return;
-      }
+    if (!email || !password || !name) {
+      toast.error("Все поля обязательны для заполнения!");
+      return;
+    }
 
-      let response;
-      const [last_name, first_name, surname] = name.split(" ").slice(0, 3);
+    const [last_name, first_name, surname] = name.split(" ").slice(0, 3);
+    app
+      .post(`/users/register`, {
+        last_name,
+        first_name,
+        surname,
+        email,
+        password,
+      })
+      .then(() => {
+        toast.success("Успешная регистрация!");
+        handleSubmitLogin(e);
+      })
+      .catch((error) => toast.error(error.response.message));
+  };
 
-      // Определите, нужно ли вам войти в систему или зарегистрироваться
-      if (isLogin) {
-        response = await app.post(`/users/token`, {
-          email,
-          password,
-        });
-      } else {
-        response = await app.post(`/users/register`, {
-          last_name,
-          first_name,
-          surname,
-          email,
-          password,
-        });
-      }
+  const handleSubmitLogin = (e) => {
+    e.preventDefault();
+    if (!email || !password) {
+      toast.error("Все поля обязательны для заполнения!");
+      return;
+    }
 
-      // Проверка, получен ли ответ успешно
-      if (response.status === 200) {
+    app
+      .post(`/users/token`, {
+        email,
+        password,
+      })
+      .then((response) => {
         const { access_token, user } = response.data;
         setToken(access_token);
         setUser(user);
@@ -52,25 +60,15 @@ const LoginPage = () => {
         localStorage.setItem("token", access_token);
         localStorage.setItem("user", JSON.stringify(user));
 
-        // Показывать всплывающее сообщение об успехе
-        toast.success(
-          isLogin ? "Успешно вошел в систему!" : "Зарегистрировался успешно!"
-        );
-
-        // Перенаправление на домашнюю страницу после успешного входа в систему или регистрации
-        navigate("/"); 
-      } else {
-        toast.error(response.data.message || "Что-то пошло не так!");
-      }
-    } catch (error) {
-      console.error(error); // Запись ошибки в журнал на консоль
-      toast.error(error.response?.data?.message || error.message);
-    }
+        toast.success(`Успешно вошел в систему, ${user.first_name}!`);
+      })
+      .catch((error) => toast.error(error.response.message));
   };
+
 
   if (token) {
-    return <Navigate to="/" />
-  };
+    return <Navigate to={fallbackUrl ? fallbackUrl : '/'} />;
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">
@@ -81,7 +79,10 @@ const LoginPage = () => {
         <h2 className="text-3xl font-semibold text-center text-black">
           {isLogin ? "Логин" : "Регистрация"}
         </h2>
-        <form onSubmit={onSubmitHandler} className="space-y-4 mt-6">
+        <form
+          onSubmit={isLogin ? handleSubmitLogin : handleSubmitRegistrion}
+          className="space-y-4 mt-6"
+        >
           {!isLogin && (
             <div>
               <label htmlFor="name" className="block text-md font-medium">

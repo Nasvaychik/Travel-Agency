@@ -7,7 +7,7 @@ BASE_DIR = os.path.dirname(__file__)
 # Секретный ключ проекта
 SECRET_KEY = os.getenv('SECRET_KEY', 'erngiergoierhngiowerjhifherugnrieogjeriouj')
 
-# Ссылка на подключение к БД
+# Ссылка на подключение к БДf
 DATABASE_URL = 'mysql://root:1234@localhost:3306/diplom'
 
 # Режим отладки

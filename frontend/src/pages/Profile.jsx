@@ -49,7 +49,7 @@ const Profile = () => {
 
     const fetchBookings = async () => {
       try {
-        const response = await app.get(`/bookings/user/${user.id}`);
+        const response = await app.get(`/bookings/`);
         setBookings(response.data);
       } catch (error) {
         console.error("Ошибка при загрузке бронирований:", error);
@@ -62,7 +62,7 @@ const Profile = () => {
   }, [user, navigate]);
 
   const totalBookings = bookings.length;
-  const totalSpent = bookings.reduce((sum, booking) => sum + booking.total_price, 0);
+  const totalSpent = bookings.reduce((sum, booking) => sum += parseFloat(booking.total_price), 0);
   const countriesVisited = new Set(bookings.map(booking => booking.tour.city)).size;
 
   if (!user) {
@@ -126,7 +126,7 @@ const Profile = () => {
             </div>
             <div>
               <p className="text-sm font-medium text-gray-500">Всего потрачено</p>
-              <p className="mt-1 text-2xl font-semibold text-gray-900">₽{totalSpent.toLocaleString()}</p>
+              <p className="mt-1 text-2xl font-semibold text-gray-900">₽{totalSpent}</p>
             </div>
           </motion.div>
         </div>
@@ -182,7 +182,7 @@ const Profile = () => {
                         <span>{Math.round(booking.total_price / booking.tour.base_price)} гостей</span>
                       </div>
                       <div className="text-right">
-                        <span className="font-medium">#{booking.id.substring(0, 8).toUpperCase()}</span>
+                        <span className="font-medium">#{booking.id?.toString().substring(0, 8).toUpperCase()}</span>
                       </div>
                     </div>
                     

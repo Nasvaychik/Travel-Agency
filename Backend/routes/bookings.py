@@ -47,9 +47,9 @@ async def create_booking(
     
     return booking
 
-@router.get("/my")
-async def get_my_bookings(current_user: User = Depends(auth.get_current_user)):
-    bookings = await Booking.objects.filter(client=current_user).all()
+@router.get("/", name="Вывод всех бронирований пользователя")
+async def get_my_bookings(current_user: auth.UserType):
+    bookings = await Booking.objects.select_related(['tour', 'room', 'client']).filter(client__id=current_user).order_by('-date_created').all()
     return bookings
 
 @router.get("/{booking_id}")
