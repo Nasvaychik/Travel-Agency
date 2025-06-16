@@ -82,12 +82,15 @@ const Navbar = () => {
         </ul>
         {user ? (
           <div className="flex items-center gap-4">
-            <Link to="/profile" className="relative group">
-              <img src={assets.user} alt="profile" width={40} />
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 p-2 bg-black text-white rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                {user.first_name} {user.last_name}
-              </div>
-            </Link>
+            <div className="relative group">
+              <Link to="/profile">
+                <img src={assets.user} alt="profile" width={40} className="cursor-pointer" />
+                {/* Всплывающая подсказка по имени пользователя */}
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 p-2 bg-black text-white rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                  Привет, {user.first_name}
+                </div>
+              </Link>
+            </div>
             <button
               onClick={logout}
               className="px-4 py-2 bg-gradient-to-b from-sky-500 to-blue-500 text-white rounded hover:from-sky-800 hover:to-blue-700"
@@ -98,7 +101,7 @@ const Navbar = () => {
         ) : (
           <Link to="/login">
             <button className="px-4 py-2 bg-gradient-to-b from-sky-500 to-blue-500 text-white rounded hover:from-sky-800 hover:to-blue-700">
-              Войти
+              Авторизоваться
             </button>
           </Link>
         )}
@@ -151,7 +154,7 @@ const Navbar = () => {
                     }`}
                     onClick={() => setMenuOpen(false)}
                   >
-                    Профиль
+                    Личный кабинет
                   </Link>
                 </li>
                 <li>

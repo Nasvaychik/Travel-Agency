@@ -71,7 +71,7 @@ function Booking() {
       const data = await response.data;
 
       toast.success("Booking successful!");
-      navigate(`/invoice/${data.id}`);
+      navigate(`/payment/${data.id}`);
     } catch (error) {
       console.error("Booking error:", error);
       toast.error("Ошибка: " + error.message);

@@ -12,19 +12,19 @@ router = APIRouter(
 )
 
 @router.post("/", name="Создание тура")
-async def create_tour(tour_data: serializers.TourCreateModel) -> models.Tour:
+async def create_tour(tour_data: serializers.TourCreateModel):
     return await models.Tour.objects.create(**tour_data.model_dump())
 
 
 @router.get("/", name="Вывод списка доступных туров")
-async def get_tours() -> list[models.Tour]:
+async def get_tours():
     current_date = datetime.now()
     return await models.Tour.objects.select_all(False).filter(
         date_expires__gte=current_date
     ).all()
 
 @router.get('/{tour_id}/', name="Вывод конкретного тура по ID")
-async def get_tour_by_id(tour_id: int) -> models.Tour:
+async def get_tour_by_id(tour_id: int):
     current_date = datetime.now()
     tour = await models.Tour.objects.select_all(False).get_or_none(
         id=tour_id,
@@ -37,7 +37,7 @@ async def get_tour_by_id(tour_id: int) -> models.Tour:
     return tour
 
 @router.get('/{tour_id}/rooms/', name="Вывод списка всех комнат отелей тура")
-async def get_tour_rooms(tour_id: int) -> list[models.HotelRoom]:
+async def get_tour_rooms(tour_id: int):
     tour = await models.Tour.objects.get_or_none(
         id=tour_id
     )

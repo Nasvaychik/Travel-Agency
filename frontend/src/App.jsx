@@ -12,6 +12,7 @@ import Booking from "./pages/Booking";
 import Invoice from "./pages/Invoice";
 import About from "./pages/About";
 import Profile from "./pages/Profile";
+import Payment from "./pages/Payment";
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/booking/:tourId" element={<Booking />} />
           <Route path="/invoice/:bookingId" element={<Invoice />} />
+          <Route path="/payment/:bookingId" element={<Payment />} />
         </Routes>
       </main>
       <Footer />

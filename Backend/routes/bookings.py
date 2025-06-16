@@ -3,13 +3,12 @@ from typing import List
 from datetime import datetime, timezone, timedelta
 
 from models import Booking, Tour, User, BookingStatuses
-from routes import users, tours, bookings
 import auth
 from serializers import BookingCreate, BookingResponse
 
 router = APIRouter(prefix="/bookings", tags=["bookings"])
 
-@router.post("/", response_model=BookingResponse)
+@router.post("/")
 async def create_booking(
     booking_data: BookingCreate,
     current_user: User = Depends(auth.get_current_user)
@@ -48,9 +47,9 @@ async def create_booking(
     
     return booking
 
-@router.get("/my", response_model=List[BookingResponse])
-async def get_my_bookings(current_user: User = Depends(auth.get_current_user)):
-    bookings = await Booking.objects.filter(client=current_user).all()
+@router.get("/", name="Вывод всех бронирований пользователя")
+async def get_my_bookings(current_user: auth.UserType):
+    bookings = await Booking.objects.select_related(['tour', 'room', 'client']).filter(client__id=current_user).order_by('-date_created').all()
     return bookings
 
 @router.get("/{booking_id}")
@@ -73,7 +72,7 @@ async def get_booking(
     
     return booking
 
-@router.patch("/{booking_id}/cancel", response_model=BookingResponse)
+@router.patch("/{booking_id}/cancel")
 async def cancel_booking(
     booking_id: int,
     current_user: User = Depends(auth.get_current_user)
