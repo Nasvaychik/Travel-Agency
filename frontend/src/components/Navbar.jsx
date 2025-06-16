@@ -85,22 +85,24 @@ const Navbar = () => {
         {user ? (
           <div className="flex items-center gap-4">
             <div className="relative group">
-              <img src={assets.user} alt="profile" width={40} />
-              {/* Всплывающая подсказка по имени пользователя */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 p-2 bg-black text-white rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                Привет,{user.name}
-              </div>
+              <Link to="/profile">
+                <img src={assets.user} alt="profile" width={40} className="cursor-pointer" />
+                {/* Всплывающая подсказка по имени пользователя */}
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-12 p-2 bg-black text-white rounded opacity-0 group-hover:opacity-100 transition-opacity">
+                  Привет, {user.first_name}
+                </div>
+              </Link>
             </div>
             <button
               onClick={logout}
-              className="px-4 py-2 bg-gradient-to-b from-sky-500 to-blue-500 text-white rounded hover:from-sky-800 hover:to-blue-700 "
+              className="px-4 py-2 bg-gradient-to-b from-sky-500 to-blue-500 text-white rounded hover:from-sky-800 hover:to-blue-700"
             >
               Выход из системы
             </button>
           </div>
         ) : (
           <Link to="/login">
-            <button className="px-4 py-2 bg-gradient-to-b from-sky-500 to-blue-500 text-white rounded hover:from-sky-800 hover:to-blue-700 ">
+            <button className="px-4 py-2 bg-gradient-to-b from-sky-500 to-blue-500 text-white rounded hover:from-sky-800 hover:to-blue-700">
               Авторизоваться
             </button>
           </Link>
@@ -126,9 +128,7 @@ const Navbar = () => {
               <Link
                 to="/about"
                 className={`hover:text-blue-500 ${
-                  location.pathname === "/about"
-                    ? "text-blue-500 font-bold"
-                    : ""
+                  location.pathname === "/about" ? "text-blue-500 font-bold" : ""
                 }`}
                 onClick={() => setMenuOpen(false)}
               >
@@ -139,9 +139,7 @@ const Navbar = () => {
               <Link
                 to="/tours"
                 className={`hover:text-blue-500 ${
-                  location.pathname === "/tours"
-                    ? "text-blue-500 font-bold"
-                    : ""
+                  location.pathname === "/tours" ? "text-blue-500 font-bold" : ""
                 }`}
                 onClick={() => scrollTo(0, 0) && setMenuOpen(false)}
               >
@@ -151,6 +149,17 @@ const Navbar = () => {
 
             {user ? (
               <>
+                <li>
+                  <Link
+                    to="/profile"
+                    className={`hover:text-blue-500 ${
+                      location.pathname === "/profile" ? "text-blue-500 font-bold" : ""
+                    }`}
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    Личный кабинет
+                  </Link>
+                </li>
                 <li>
                   <button
                     onClick={() => {
